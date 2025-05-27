@@ -13,8 +13,10 @@ struct MapMemo {
 
 #[get("/api/places")]
 async fn get_places() -> impl Responder {
-    let url = "https://(url).supabase.co/rest/v1/map_memos";
-    let api_key = "(key)";
+
+    let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
+    let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
+
 
     let client = reqwest::Client::new();
     let res = client
