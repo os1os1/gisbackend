@@ -1,3 +1,4 @@
+use std::env;
 use actix_web::{get, App, HttpServer, HttpResponse, Responder};
 use serde::{Serialize, Deserialize};
 use reqwest::Client;
