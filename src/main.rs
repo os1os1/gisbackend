@@ -22,8 +22,8 @@ async fn get_places() -> impl Responder {
     let client = reqwest::Client::new();
     let res = client
         .get(url)
-        .header("apikey", api_key)
-        .header("Authorization", format!("Bearer {}", api_key))
+        .header("apikey", &api_key)
+        .header("Authorization", format!("Bearer {}", &api_key))
         .header("Accept", "application/json")
         .query(&[("select", "id,title,location")])
         .send()
