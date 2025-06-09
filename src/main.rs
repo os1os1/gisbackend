@@ -50,7 +50,7 @@ for (key, value) in std::env::vars() {
             for memo in &data {
                 match GeoJson::from_json_value(memo.location.clone()) {
                     Ok(geo) => println!("GeoJSON: {:?}", geo),
-                    Err(e) => println!("Failed to parse GeoJSON: {}", e),
+                    Err(e) => println!("Failed to parse GeoJSON:  {}", e),
                 }
             }
 
