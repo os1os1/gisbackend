@@ -1,5 +1,5 @@
 use std::env;
-use actix_web::{get, App, HttpServer, HttpResponse, Responder};
+use actix_web::{get, post, App, HttpServer, HttpResponse, Responder};
 use serde::{Serialize, Deserialize};
 use reqwest::Client;
 use serde_json::Value;
@@ -20,18 +20,8 @@ struct NewMapMemo {
 
 #[get("/api/places")]
 async fn get_places() -> impl Responder {
-
-for (key, value) in std::env::vars() {
-    println!("{} = {}", key, value);
-}
-
     let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
     let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
-
-for (key, value) in std::env::vars() {
-    println!("{} = {}", key, value);
-}
-
 
     let client = reqwest::Client::new();
     let res = client
