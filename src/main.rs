@@ -12,6 +12,12 @@ struct MapMemo {
     location: Value, // GeoJSON形式を保持
 }
 
+#[derive(Deserialize)]
+struct NewMapMemo {
+    title: String,
+    location: Value, // GeoJSON形式 {"type": "Point", "coordinates": [lng, lat]}
+}
+
 #[get("/api/places")]
 async fn get_places() -> impl Responder {
 
@@ -60,12 +66,46 @@ for (key, value) in std::env::vars() {
     }
 }
 
+#[post("/api/places")]
+async fn post_place(place: web::Json<NewMapMemo>) -> impl Responder {
+    let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
+    let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
+
+    let client = Client::new();
+
+    let payload = json!({
+        "title": place.title,
+        "location": place.location
+    });
+
+    let res = client
+        .post(&url)
+        .header("apikey", &api_key)
+        .header("Authorization", format!("Bearer {}", &api_key))
+        .header("Content-Type", "application/json")
+        .json(&payload)
+        .send()
+        .await;
+
+    match res {
+        Ok(resp) => {
+            let status = resp.status();
+            let body = resp.text().await.unwrap_or_default();
+            HttpResponse::build(status).body(body)
+        }
+        Err(e) => HttpResponse::InternalServerError().body(format!("Request error: {}", e)),
+    }
+}
+
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let port = std::env::var("PORT").unwrap_or("8080".to_string());
     let addr = format!("0.0.0.0:{}", port);
     println!("Server running on http://{}", addr);
-    HttpServer::new(|| App::new().service(get_places))
+    HttpServer::new(|| App::new()
+                            .service(get_places),
+                            .service(post_place) )
         .bind(&addr)?
         .run()
         .await
