@@ -62,14 +62,16 @@ async fn get_places() -> impl Responder {
 async fn post_place(place: web::Json<NewMapMemo>) -> impl Responder {
     println!("Received POST: {:?}", place);
 
-    let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
+    let url = format!("{}/rpc/insert_map_memos", env::var("SUPABASE_URL").unwrap());
     let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
+
+
 
     let client = Client::new();
 
     let payload = json!({
         "title": place.title,
-        "location": place.location
+        "geojson": place.location
     });
 
     let res = client
@@ -85,6 +87,7 @@ async fn post_place(place: web::Json<NewMapMemo>) -> impl Responder {
         Ok(resp) => {
             let status = resp.status();
             let body = resp.text().await.unwrap_or_default();
+            println!("Status: {}, Body: {}", status, body);
             HttpResponse::build(status).body(body)
         }
         Err(e) => HttpResponse::InternalServerError().body(format!("Request error: {}", e)),
