@@ -60,6 +60,8 @@ async fn get_places() -> impl Responder {
 
 #[post("/api/places")]
 async fn post_place(place: web::Json<NewMapMemo>) -> impl Responder {
+    println!("Received POST: {:?}", place);
+
     let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
     let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
 
