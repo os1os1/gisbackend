@@ -5,6 +5,7 @@ use reqwest::Client;
 use serde_json::json;
 use serde_json::Value;
 use geojson::{GeoJson, Geometry};
+use actix_cors::Cors;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct MapMemo {
@@ -96,6 +97,7 @@ async fn main() -> std::io::Result<()> {
     println!("Server running on http://{}", addr);
     HttpServer::new(|| {
         App::new()
+            .wrap(Cors::permissive())  // とりあえず全許可（本番は制限推奨。固定のURLだけ、許可とかにしないとセキュリティ上よくない）
             .service(get_places)
             .service(post_place)
     })
