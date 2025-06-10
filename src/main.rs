@@ -14,7 +14,7 @@ struct MapMemo {
     location: Value, // GeoJSON形式を保持
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct NewMapMemo {
     title: String,
     location: Value, // GeoJSON形式 {"type": "Point", "coordinates": [lng, lat]}
