@@ -20,7 +20,7 @@ struct NewMapMemo {
     location: Value, // GeoJSON形式 {"type": "Point", "coordinates": [lng, lat]}
 }
 
-#[get("/api/places")]
+#[get("/places")]
 async fn get_places() -> impl Responder {
     let url = env::var("SUPABASE_URL").expect("SUPABASE_URL not set");
     let api_key = env::var("SUPABASE_API_KEY").expect("SUPABASE_API_KEY not set");
@@ -58,7 +58,7 @@ async fn get_places() -> impl Responder {
     }
 }
 
-#[post("/api/places")]
+#[post("/places")]
 async fn post_place(place: web::Json<NewMapMemo>) -> impl Responder {
     println!("Received POST!");
 //    println!("Received POST: {:?}", place);
@@ -104,8 +104,11 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(Cors::permissive())  // とりあえず全許可（本番は制限推奨。固定のURLだけ、許可とかにしないとセキュリティ上よくない）
-            .service(get_places)
-            .service(post_place)
+            .service(
+              web::scope("/api")
+                .service(get_places)
+                .service(post_place)
+            )
     })
         .bind(&addr)?
         .run()
