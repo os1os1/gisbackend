@@ -1,4 +1,4 @@
-FROM rustlang/rust:nightly-2024-07-12 AS builder
+FROM rustlang/rust:nightly AS builder
 WORKDIR /app
 
 # 先に Cargo.toml のみコピーして依存を解決
