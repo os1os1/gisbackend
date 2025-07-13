@@ -3,10 +3,8 @@ WORKDIR /app
 
 # 先に Cargo.toml のみコピーして依存を解決
 COPY Cargo.toml .
-RUN cargo fetch
-
-# ここで Cargo.lock を作らせる（または既に無いので新しく生成）
-RUN touch Cargo.lock
+# Cargo.lock を生成させる
+RUN cargo generate-lockfile
 
 # ソースをコピー
 COPY src/ ./src/
