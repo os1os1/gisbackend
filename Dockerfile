@@ -9,7 +9,7 @@ COPY src/ ./src/
 RUN cargo fetch
 RUN cargo build --release
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 WORKDIR /app
 
 RUN apt-get update && \
