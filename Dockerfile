@@ -1,5 +1,7 @@
-FROM rust:1.72 as builder
+FROM rustlang/rust:nightly-2024-07-12 AS builder
 WORKDIR /app
+COPY Cargo.toml ./
+RUN cargo fetch
 COPY . .
 RUN cargo build --release
 
